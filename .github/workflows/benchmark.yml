@@ -32,11 +32,7 @@ jobs:
           tool: protoc  
       
       - name: Build benchmarks
-        run: |
-          cargo build \
-          --package node-template \
-          --profile release \
-          --features runtime-benchmarks
+        run: cargo build --package node-template --profile release --features runtime-benchmarks
 
       - name: Run benchmarks
         run: |
