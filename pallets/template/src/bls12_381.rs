@@ -291,14 +291,17 @@ pub fn prepare_inputs_groth16<Curve: Pairing>(pvk: Vec<u8>) -> Result<Vec<u8>, E
 	)
 	.unwrap();
 
-	let c = Curve::ScalarField::deserialize_with_mode(C_SERIALIZED, Compress::Yes, Validate::No).unwrap();
+	let c = Curve::ScalarField::deserialize_with_mode(C_SERIALIZED, Compress::Yes, Validate::No)
+		.unwrap();
 
 	let inputs = Groth16::<Curve>::prepare_inputs(&pvk, &[c]).unwrap();
 
 	Ok(serialize_argument(inputs))
 }
 
-pub fn prepare_verifying_key_groth16<Curve: Pairing<ScalarField = ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4>>>() -> Result<Vec<u8>, Error> {
+pub fn prepare_verifying_key_groth16<
+	Curve: Pairing<ScalarField = ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4>>,
+>() -> Result<Vec<u8>, Error> {
 	let vk = <Groth16<Curve> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
 		VK_SERIALIZED,
 		Compress::Yes,
@@ -312,7 +315,9 @@ pub fn prepare_verifying_key_groth16<Curve: Pairing<ScalarField = ark_ff::Fp<ark
 	Ok(serialized_pvk)
 }
 
-pub fn verify_with_prepared_inputs_groth16<Curve: Pairing<ScalarField = ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4>>>(
+pub fn verify_with_prepared_inputs_groth16<
+	Curve: Pairing<ScalarField = ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4>>,
+>(
 	inputs: Vec<u8>,
 	pvk: Vec<u8>,
 ) -> Result<(), Error> {
