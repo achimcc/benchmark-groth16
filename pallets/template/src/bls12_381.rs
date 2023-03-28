@@ -286,7 +286,7 @@ pub fn prepare_inputs_groth16<Curve: Pairing>(pvk: Vec<u8>) -> Result<Vec<u8>, E
 	let cursor = Cursor::new(&pvk);
 	let pvk = ark_groth16::PreparedVerifyingKey::<Curve>::deserialize_with_mode(
 		cursor,
-		Compress::Yes,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
@@ -324,13 +324,13 @@ pub fn verify_with_prepared_inputs_groth16<
 	let cursor = Cursor::new(&pvk);
 	let pvk = ark_groth16::PreparedVerifyingKey::<Curve>::deserialize_with_mode(
 		cursor,
-		Compress::Yes,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
 	let proof = <Groth16<Curve> as SNARK<BlsFrOptimized>>::Proof::deserialize_with_mode(
 		PROOF_SERIALIZED,
-		Compress::Yes,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
