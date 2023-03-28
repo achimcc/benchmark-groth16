@@ -198,7 +198,7 @@ pub fn verify_with_prepared_inputs_groth16<
 	.unwrap();
 	let proof = <Groth16<Curve> as SNARK<BlsFrOptimized>>::Proof::deserialize_with_mode(
 		PROOF_SERIALIZED,
-		Compress::No,
+		Compress::Yes,
 		Validate::No,
 	)
 	.unwrap();
