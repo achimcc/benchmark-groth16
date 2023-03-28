@@ -53,17 +53,7 @@ pub type G2AffineOptimized = G2Affine_Host<HostBls12_381>;
 pub type G1ProjectiveOptimized = G1ProjectiveOptimized_Host<HostBls12_381>;
 pub type G2ProjectiveOptimized = G2ProjectiveOptimized_Host<HostBls12_381>;
 
-pub fn do_pairing_optimized(a: G1AffineOptimized, b: G2AffineOptimized) -> Result<(), Error> {
-	let _ = Bls12_381Optimized::multi_pairing([a], [b]);
-	Ok(())
-}
-
-pub fn do_pairing(a: ark_bls12_381::G1Affine, b: ark_bls12_381::G2Affine) -> Result<(), Error> {
-	let _ = ark_bls12_381::Bls12_381::multi_pairing([a], [b]);
-	Ok(())
-}
-
-static PROOF_SERIALIZED: &[u8] = &[
+pub static PROOF_SERIALIZED: &[u8] = &[
 	160, 91, 229, 15, 171, 87, 149, 187, 135, 132, 57, 58, 80, 69, 249, 135, 71, 23, 58, 210, 135,
 	245, 94, 33, 52, 113, 189, 85, 151, 69, 85, 20, 82, 69, 60, 76, 58, 57, 231, 200, 131, 16, 132,
 	159, 60, 122, 31, 195, 173, 99, 72, 182, 183, 179, 76, 134, 191, 55, 167, 72, 205, 45, 130,
@@ -76,7 +66,7 @@ static PROOF_SERIALIZED: &[u8] = &[
 	152, 229, 83, 229, 234, 237,
 ];
 
-const VK_SERIALIZED: &[u8] = &[
+pub const VK_SERIALIZED: &[u8] = &[
 	183, 29, 177, 250, 95, 65, 54, 46, 147, 2, 91, 53, 86, 215, 110, 173, 18, 37, 207, 89, 13, 28,
 	219, 158, 56, 42, 31, 235, 183, 150, 61, 205, 36, 165, 30, 24, 223, 4, 171, 34, 27, 236, 175,
 	41, 22, 159, 175, 37, 179, 162, 107, 11, 71, 18, 231, 141, 93, 113, 120, 109, 150, 19, 42, 124,
@@ -100,24 +90,27 @@ const VK_SERIALIZED: &[u8] = &[
 	180, 122, 216, 118, 225, 240, 43, 91, 224, 52, 173, 175, 115, 149, 42, 232, 175, 254, 229, 245,
 	24, 65, 222,
 ];
-const C_SERIALIZED: &[u8] = &[
+pub const C_SERIALIZED: &[u8] = &[
 	24, 246, 200, 56, 227, 0, 59, 95, 49, 157, 206, 57, 13, 141, 238, 168, 24, 78, 144, 62, 155,
 	209, 70, 78, 67, 71, 89, 204, 203, 208, 132, 24,
 ];
 
-pub fn do_verify_groth16() -> Result<(), Error> {
+pub fn do_verify_groth16(vk: Vec<u8>, c: Vec<u8>, proof: Vec<u8>) -> Result<(), Error> {
+	let cursor = Cursor::new(&vk);
 	let vk = <Groth16<Bls12_381> as SNARK<BlsFr>>::VerifyingKey::deserialize_with_mode(
-		VK_SERIALIZED,
-		Compress::Yes,
+		cursor,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
 
-	let c = Fp::deserialize_with_mode(C_SERIALIZED, Compress::Yes, Validate::No).unwrap();
+	let cursor = Cursor::new(&c);
+	let c = Fp::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
+	let cursor = Cursor::new(&proof);
 	let proof = <Groth16<Bls12_381> as SNARK<BlsFr>>::Proof::deserialize_with_mode(
-		PROOF_SERIALIZED,
-		Compress::Yes,
+		cursor,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
@@ -127,20 +120,23 @@ pub fn do_verify_groth16() -> Result<(), Error> {
 	Ok(())
 }
 
-pub fn do_verify_groth16_optimized() -> Result<(), Error> {
+pub fn do_verify_groth16_optimized(vk: Vec<u8>, c: Vec<u8>, proof: Vec<u8>) -> Result<(), Error> {
+	let cursor = Cursor::new(&vk);
 	let vk = <Groth16<Bls12_381Optimized> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
-					VK_SERIALIZED,
-					Compress::Yes,
+					cursor,
+					Compress::No,
 					Validate::No,
 				)
 				.unwrap();
 
-	let c = Fp::deserialize_with_mode(C_SERIALIZED, Compress::Yes, Validate::No).unwrap();
+	let cursor = Cursor::new(&c);
+	let c = Fp::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
+	let cursor = Cursor::new(&proof);
 	let proof =
 		<Groth16<Bls12_381Optimized> as SNARK<BlsFrOptimized>>::Proof::deserialize_with_mode(
-			PROOF_SERIALIZED,
-			Compress::Yes,
+			cursor,
+			Compress::No,
 			Validate::No,
 		)
 		.unwrap();
@@ -150,7 +146,7 @@ pub fn do_verify_groth16_optimized() -> Result<(), Error> {
 	Ok(())
 }
 
-pub fn prepare_inputs_groth16<Curve: Pairing>(pvk: Vec<u8>) -> Result<Vec<u8>, Error> {
+pub fn prepare_inputs_groth16<Curve: Pairing>(pvk: Vec<u8>, c: Vec<u8>) -> Result<Vec<u8>, Error> {
 	let cursor = Cursor::new(&pvk);
 	let pvk = ark_groth16::PreparedVerifyingKey::<Curve>::deserialize_with_mode(
 		cursor,
@@ -159,8 +155,8 @@ pub fn prepare_inputs_groth16<Curve: Pairing>(pvk: Vec<u8>) -> Result<Vec<u8>, E
 	)
 	.unwrap();
 
-	let c = Curve::ScalarField::deserialize_with_mode(C_SERIALIZED, Compress::Yes, Validate::No)
-		.unwrap();
+	let cursor = Cursor::new(&c);
+	let c = Curve::ScalarField::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 
 	let inputs = Groth16::<Curve>::prepare_inputs(&pvk, &[c]).unwrap();
 
@@ -169,10 +165,13 @@ pub fn prepare_inputs_groth16<Curve: Pairing>(pvk: Vec<u8>) -> Result<Vec<u8>, E
 
 pub fn prepare_verifying_key_groth16<
 	Curve: Pairing<ScalarField = ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4>>,
->() -> Result<Vec<u8>, Error> {
+>(
+	vk: Vec<u8>,
+) -> Result<Vec<u8>, Error> {
+	let cursor = Cursor::new(&vk);
 	let vk = <Groth16<Curve> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
-		VK_SERIALIZED,
-		Compress::Yes,
+		cursor,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
@@ -188,6 +187,7 @@ pub fn verify_with_prepared_inputs_groth16<
 >(
 	inputs: Vec<u8>,
 	pvk: Vec<u8>,
+	proof: Vec<u8>,
 ) -> Result<(), Error> {
 	let cursor = Cursor::new(&pvk);
 	let pvk = ark_groth16::PreparedVerifyingKey::<Curve>::deserialize_with_mode(
@@ -196,9 +196,10 @@ pub fn verify_with_prepared_inputs_groth16<
 		Validate::No,
 	)
 	.unwrap();
+	let cursor = Cursor::new(&proof);
 	let proof = <Groth16<Curve> as SNARK<BlsFrOptimized>>::Proof::deserialize_with_mode(
-		PROOF_SERIALIZED,
-		Compress::Yes,
+		cursor,
+		Compress::No,
 		Validate::No,
 	)
 	.unwrap();
