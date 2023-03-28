@@ -1,7 +1,7 @@
 # Bechmark results comparison table
 
 
-| extrinsic                               |  normal(µs)[^1]  |optimized(µs)[^2]|   speedup[^3]   |  dummy(µs)[^4]  |   wasm(µs)[^5]  |  native(µs)[^6] |
+| extrinsic                               |  normal(µs)      |optimized(µs)    |   speedup      |  dummy(µs)     |   wasm(µs)     |  native(µs)    |
 | --------------------------------------- |  --------------- | --------------- | --------------- | --------------- | --------------- | --------------- |
 | groth16_verification (bls12_381)        |    27519.38      |    7853.77      |${\color{green}\bf 3.50 \boldsymbol{\times}}$|                 |                     |                 | 
 | groth16_prepare_inputs                   |    1847.27      |    274.39       |${\color{green}\bf 6.73 \boldsymbol{\times}}$|                 |                     |             |
