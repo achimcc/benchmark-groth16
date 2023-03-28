@@ -54,7 +54,7 @@ benchmarks! {
 
 		let proof = <Groth16<ark_bls12_381::Bls12_381> as SNARK<BlsFr>>::Proof::deserialize_with_mode(
 			bls12_381::PROOF_SERIALIZED,
-			Compress::No,
+			Compress::Yes,
 			Validate::No,
 		)
 		.unwrap();
