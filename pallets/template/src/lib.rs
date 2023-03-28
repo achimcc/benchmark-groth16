@@ -83,7 +83,7 @@ pub mod pallet {
 			let cursor = Cursor::new(&vk);
 			let vk = <Groth16<Bls12_381Optimized> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
 				cursor,
-				Compress::Yes,
+				Compress::No,
 				Validate::No,
 			)
 			.unwrap();
@@ -91,7 +91,7 @@ pub mod pallet {
 
 			let cursor = Cursor::new(&c);
 			let c: ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4> =
-				Fp::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
+				Fp::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 			let c = utils::serialize_argument(c);
 
 			let cursor = Cursor::new(&proof);
@@ -127,7 +127,7 @@ pub mod pallet {
 			let cursor = Cursor::new(&vk);
 			let vk = <Groth16<Bls12_381Optimized> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
 				cursor,
-				Compress::Yes,
+				Compress::No,
 				Validate::No,
 			)
 			.unwrap();
@@ -135,7 +135,7 @@ pub mod pallet {
 
 			let cursor = Cursor::new(&c);
 			let c: ark_ff::Fp<ark_ff::MontBackend<ark_bls12_381::FrConfig, 4>, 4> =
-				Fp::deserialize_with_mode(cursor, Compress::Yes, Validate::No).unwrap();
+				Fp::deserialize_with_mode(cursor, Compress::No, Validate::No).unwrap();
 			let c = utils::serialize_argument(c);
 
 			let cursor = Cursor::new(&proof);
@@ -220,7 +220,7 @@ pub mod pallet {
 			let cursor = Cursor::new(&vk);
 			let vk = <Groth16<ark_bls12_381::Bls12_381> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
 				cursor,
-				Compress::Yes,
+				Compress::No,
 				Validate::No,
 			)
 			.unwrap();
