@@ -1,7 +1,7 @@
 # Bechmark results comparison table
 
 
-| extrinsic                               |  normal(µs)      |optimized(µs)    |   speedup      | 
+| extrinsic                               |  arkworks(µs)      |ark-substrate(µs)    |   speedup      | 
 | --------------- |  --------------- | --------------- | --------------- | 
 | groth16_verification (bls12_381)        |    23551.78      |    3548.19      |${\color{green}\bf 6.64 \boldsymbol{\times}}$| 
 | groth16_prepare_inputs                   |    1796.18      |    266.89       |${\color{green}\bf 6.73 \boldsymbol{\times}}$|
