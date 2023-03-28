@@ -241,7 +241,7 @@ pub mod pallet {
 			let cursor = Cursor::new(&vk);
 			let vk = <Groth16<bls12_381::Bls12_381Optimized> as SNARK<BlsFrOptimized>>::VerifyingKey::deserialize_with_mode(
 				cursor,
-				Compress::Yes,
+				Compress::No,
 				Validate::No,
 			)
 			.unwrap();
